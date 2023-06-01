@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo-server
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=tarpaulin
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=hunter2
+    volumes: 
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - my-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-server
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=hunter2
+    networks:
+      - my-network
+
+  node:
+    build: .
+    container_name: api
+    environment:
+      - MONGO_DB_NAME=tarpaulin
+      - MONGO_HOST=mongo
+      - MONGO_USER=root
+      - MONGO_PASSWORD=hunter2
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=root
+      - RABBITMQ_PASS=hunter2
+    restart: on-failure
+    depends_on:
+      - mongo
+      - rabbitmq
+    ports:
+      - "8000:8000"
+    networks:
+      - my-network
+
+networks:
+  my-network:
