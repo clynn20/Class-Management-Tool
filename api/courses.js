@@ -1,20 +1,19 @@
 const { Router } = require('express');
+const { ObjectId } = require('mongodb');
 
 const { validateAgainstSchema } = require('../lib/validation')
-
 const { getDbReference } = require('../lib/mongo');
 const { CourseSchema } = require('../models/course');
 
 const router = Router();
 
 router.get('/', async (req, res, next) => {
-    const db = getDbReference()
+    const db = getDbReference();
     const collection = db.collection('courses')
     try {
         const courses = await collection.find().toArray()
         if (courses.length > 0) {
-            console.log(courses)
-            res.send(courses)
+            res.status(200).send(courses)
         } else {
             next()
         }
@@ -44,19 +43,60 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id', (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
+router.get('/:id', async (req, res, next) => {
+    const id = req.params.id
+    try {
+        const db = getDbReference()
+        const collection = db.collection('courses')
+        const course = await collection.findOne({
+            _id: new ObjectId(id)
+        })
+        if (course) {
+            res.status(200).send(course)
+        } else {
+            next()
+        }
+    } catch(err) {
+        next(err)
+    }
 });
 
-router.patch('/:id', (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
+router.patch('/:id', async (req, res, next) => {
+    const id = req.params.id
+    const updatedFields = req.body
+    try {
+        const db = getDbReference()
+        const collection = db.collection('courses')
+        const course = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updatedFields }
+        )
+        if (course.modifiedCount > 0) {
+            res.status(200).send({ message: 'Course updated successfully' })
+        } else {
+            next() 
+        }
+    } catch (err) {
+        next(err)
+    }
 });
 
-router.delete('/:id', (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
+router.delete('/:id', async (req, res, next) => {
+    const id = req.params.id
+    try {
+        const db = getDbReference()
+        const collection = db.collection('courses')
+        const deletedCourse = await collection.deleteOne(
+            { _id: new ObjectId(id) }
+        )
+        if (deletedCourse.deletedCount > 0) {
+            res.status(200).send({ message: 'Course deleted successfully' })
+        } else {
+            next()
+        }
+    } catch (err) {
+        next(err)
+    }
 });
 
 router.get('/:id/students', (req, res, next) => {
