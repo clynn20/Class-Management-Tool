@@ -2,13 +2,13 @@ const { ObjectId } = require('mongodb')
 const bcrypt = require("bcryptjs")
 
 const { extractValidFields } = require('../lib/validation')
-const { getDb } = require('../lib/mongo')
+const { getDbReference } = require('../lib/mongo')
 
 const UserSchema = {
-    Name: { type: String, required: true },
-    Email: { type: String, required: false },
-    Password: { type: String, required: true },
-    Role: { type: String, required: true }
+    name: { type: String, required: true },
+    email: { type: String, required: false },
+    password: { type: String, required: true },
+    role: { type: String, required: true }
 }
 
 exports.UserSchema = UserSchema
@@ -23,8 +23,8 @@ exports.insertNewUser = async function (user) {
     userToInsert.password = hash
     console.log("  -- userToInsert:", userToInsert)
 
-    const db = getDb()
-    const collection = db.collection('users')
+    const db = getDbReference()
+    const collection = db.collection('user')
     const result = await collection.insertOne(userToInsert)
     return result.insertedId
 }
@@ -34,8 +34,8 @@ exports.insertNewUser = async function (user) {
  * Fetch a user from the DB based on user ID.
  */
 async function getUserById (id, includePassword) {
-    const db = getDb()
-    const collection = db.collection('users')
+    const db = getDbReference()
+    const collection = db.collection('user')
     if (!ObjectId.isValid(id)) {
         return null
     } else {
@@ -49,17 +49,14 @@ async function getUserById (id, includePassword) {
 exports.getUserById = getUserById
 
 async function getUserByEmail (email, includePassword) {
-    const db = getDb()
-    const collection = db.collection('users')
-    if (!ObjectId.isValid(id)) {
-        return null
-    } else {
-        const results = await collection
-            .find({ Email: email })
-            .project(includePassword ? {} : { password: 0 })
-            .toArray()
-        return results[0]
-    }
+    const db = getDbReference()
+    const collection = db.collection('user')
+    
+    const results = await collection
+        .find({ Email: email })
+        .project(includePassword ? {} : { password: 0 })
+        .toArray()
+    return results[0]
 }
 exports.getUserByEmail = getUserByEmail
 

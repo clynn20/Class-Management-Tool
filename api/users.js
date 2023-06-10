@@ -20,7 +20,7 @@ router.post('/', async function (req, res) {
     if (validateAgainstSchema(req.body, UserSchema)) {
         const user = await getUserByEmail(req.body.email, false);
         if (!user) {
-            if (req.body.role != "A" && req.body.role != "I") {
+            if (req.body.role != "admin" && req.body.role != "instructor") {
                 try {
                     const id = await insertNewUser(req.body)
                     res.status(201).send({ message: "New User successfully added.", _id: id })
