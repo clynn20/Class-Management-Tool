@@ -16,14 +16,14 @@ router.get('/', async function (req, res, next) {
 });
 
 
-// If not provide auth token, only can create normal user with student role
+// If not provide auth(Bearer) token, only can create normal user with student role
 // If provide valid admin auth token, can create all kinds of user 
 router.post('/', requireAuthenticationVer1, async function (req, res) {
     if (validateAgainstSchema(req.body, UserSchema)) {
         const user = extractValidFields(req.body, UserSchema)
         if (((user.role == "admin" || user.role == "instructor")) && (req.authUserRole != "admin")){
             res.status(403).send({
-                error: "Didn't have valid user role, only admin user can create admin or instructor"
+                error: "Didn't have valid user permission, only admin user can create admin or instructor"
             }) 
         } else{
             const id = await insertNewUser(user)
@@ -45,7 +45,7 @@ router.post('/login', async function (req, res, next) {
         if (validateAgainstSchema(req.body, LoginSchema)) {
             const login = extractValidFields(req.body, LoginSchema)
             const [authenticated, user] = await validateUserEnP(login.email, login.password)
-            console.log(authenticated)
+            //console.log(authenticated)
                 if (authenticated) {
                     const token = generateAuthToken(user._id)
                     res.status(200).send({
