@@ -99,22 +99,22 @@ router.delete('/:id', async (req, res, next) => {
     }
 });
 
-router.get('/:id/students', (req, res, next) => {
+router.get('/:id/students', async (req, res, next) => {
     const id = parseInt(req.params.id)
     res.sendStatus(200);
 });
 
-router.post('/:id/students', (req, res, next) => {
+router.post('/:id/students', async (req, res, next) => {
     const id = parseInt(req.params.id)
     res.sendStatus(200);
 });
 
-router.get('/:id/roster', (req, res, next) => {
+router.get('/:id/roster', async (req, res, next) => {
     const id = parseInt(req.params.id)
     res.sendStatus(200);
 });
 
-router.get('/:id/assignments', (req, res, next) => {
+router.get('/:id/assignments', async (req, res, next) => {
     const id = parseInt(req.params.id)
     res.sendStatus(200);
 });

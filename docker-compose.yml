@@ -15,19 +15,6 @@ services:
     networks:
       - my-network
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq-server
-    hostname: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=root
-      - RABBITMQ_DEFAULT_PASS=hunter2
-    networks:
-      - my-network
-
   node:
     build: .
     container_name: api
@@ -36,13 +23,9 @@ services:
       - MONGO_HOST=mongo
       - MONGO_USER=root
       - MONGO_PASSWORD=hunter2
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USER=root
-      - RABBITMQ_PASS=hunter2
     restart: on-failure
     depends_on:
       - mongo
-      - rabbitmq
     ports:
       - "8000:8000"
     networks:
