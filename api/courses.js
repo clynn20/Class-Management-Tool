@@ -3,7 +3,10 @@ const { ObjectId } = require('mongodb');
 
 const { validateAgainstSchema } = require('../lib/validation')
 const { getDbReference } = require('../lib/mongo');
-const { CourseSchema } = require('../models/course');
+const { CourseSchema, updateCourseById, getCourseInstructorId, getCourseById } = require('../models/course');
+const { getUserByEmail, getUserById} = require('../models/user');
+
+const {requireAuthenticationVer1, requireAuthenticationVer2 } = require("../lib/auth")
 
 const router = Router();
 
@@ -99,24 +102,120 @@ router.delete('/:id', async (req, res, next) => {
     }
 });
 
-router.get('/:id/students', async (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
-});
+router.get('/:id/students', requireAuthenticationVer1, async (req, res, next) => {
+    console.log(req.authUserId);
+    console.log(req.authUserRole);
+    const auth = await getUserByEmail(req.user);
+    const instructorid = await getCourseInstructorId(req.params.id);
+    console.log("getCourseInstructorId",getCourseInstructorId)
+    if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
+      const course = await getCourseById(req.params.id);
+      console.log("getCourseById", getCourseById)
+  
+      if (course) {
+        const studentList = [];
+        console.log("studentList",studentList)
+        if (course.studentsId && course.studentsId.length > 0) {
+          for (let i = 0; i < course.studentsId.length; i++) {
+            const temp = await getUserById(course.studentsId[i]);
+            studentList.push(temp);
+          }
+        }
+  
+        res.status(200).send({
+          students: studentList
+        });
+      } else {
+        res.status(404).send({
+          error: "Course id not found."
+        });
+      }
+    } else {
+      res.status(403).send({
+        error: "The request could not be made by an authenticated User."
+      });
+    }
+  });
 
-router.post('/:id/students', async (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
-});
+router.post('/:id/students', requireAuthenticationVer1,async(req,res,next)=>{
+    console.log("req.body",req.body)
+    //const auth = await getUserByEmail(req.user)
+    const instructorid = await getCourseInstructorId(req.params.id)
+    console.log("instructorid",instructorid)
+    console.log("req.params.id",req.params.id)
+    const course = await getCourseById(req.params.id)
+    console.log("course", course)
+    const add = req.body.add
+    console.log("add",add)
+    const remove = req.body.remove
+    console.log("remove",remove)
+    let studentList = []
+
+    for(let i = 0; i<add.length; i++){
+        studentList.push(add[i])
+    }
+    studentList = studentList.filter(id => !remove.includes(id))
+    console.log("studentList",studentList)
+
+    if(req.authUserRole == 'admin' || (req.authUserRole == 'instructor' && req.authUserId == instructorid)){
+        if(course){
+            const resBody = {
+                _id: course._id,
+                subject:course.subject,
+                number: course.number,
+                title: course.title,
+                term: course.term,
+                instructorId: course.instructorId,
+                studentsId: studentList
+            }    
+            if(validateAgainstSchema(resBody, CourseSchema)){
+                const result = updateCourseById(course._id, resBody)
+                res.status(200).send({
+                    resBody
+                })
+            }
+            else{
+                res.status(400).send({
+                    error: "check the require field again."
+                })
+            }
+        }
+        else{
+            res.status(404).send({
+                error:"	Specified Course id not found."
+            })
+        }
+    }
+    else{
+        res.status(403).send({
+            error:"The request couldn't  made by an authenticated User"
+        })
+    }
+
+})
 
 router.get('/:id/roster', async (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
+    const id = req.params.id
+    res.sendStatus(200)
 });
 
 router.get('/:id/assignments', async (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
+    const id = req.params.id
+    const db = getDbReference();
+    const collection = db.collection('assignments')
+    try {
+        const assignments = await collection.find({
+            courseId: id
+        }).toArray()
+
+        if (assignments.length > 0) {
+            res.status(200).send(assignments)
+        } else {
+            next()
+        }
+    } catch (err) {
+        next(err)
+    }
 });
 
 module.exports = router;
