@@ -137,7 +137,7 @@ router.get('/:id/students', requireAuthenticationVer1, async (req, res, next) =>
     }
   });
 
-router.post('/:id/students', requireAuthenticationVer1,async(req,res,next)=>{
+router.post('/:id/students', requireAuthenticationVer1, async(req,res,next)=>{
     console.log("req.body",req.body)
     //const auth = await getUserByEmail(req.user)
     const instructorid = await getCourseInstructorId(req.params.id)
@@ -194,9 +194,31 @@ router.post('/:id/students', requireAuthenticationVer1,async(req,res,next)=>{
 
 })
 
-router.get('/:id/roster', async (req, res, next) => {
+router.get('/:id/roster', requireAuthenticationVer1, async (req, res, next) => {
     const id = req.params.id
-    res.sendStatus(200)
+    try {
+        const db = getDbReference()
+        const collection = db.collection('courses')
+        const course = await collection.findOne({
+            _id: new ObjectId(id)
+        })
+        if (course) {
+            const studentList = course.studentsId
+            let csvData = ["id", "name", "email"].join(",") + "\r\n"
+            for (const studentId of studentList) {
+                const student = await getUserById(studentId);
+                csvData += [student._id, student.name, student.email].join(",") + "\r\n";
+            }
+            res.status(200).set({
+                "Content-Type": "text/csv",
+                "Content-Disposition": `attachment; filename="studentList.csv"`
+            }).send(csvData)
+        } else {
+            next()
+        }
+    } catch(err) {
+        next(err)
+    }
 });
 
 router.get('/:id/assignments', async (req, res, next) => {
