@@ -91,7 +91,7 @@ router.get('/:id', requireAuthenticationVer2, async function( req, res, next){
     */ 
     else{
         res.status(403).send({
-            user: user
+            error: "Not an authenticated user, you don't have permission"
         })
     }
 })
