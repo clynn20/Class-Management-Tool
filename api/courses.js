@@ -102,10 +102,40 @@ router.delete('/:id', async (req, res, next) => {
     }
 });
 
-router.get('/:id/students', async (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
-});
+router.get('/:id/students', requireAuthenticationVer1, async (req, res, next) => {
+    console.log(req.authUserId);
+    console.log(req.authUserRole);
+    const auth = await getUserByEmail(req.user);
+    const instructorid = await getCourseInstructorId(req.params.id);
+    console.log("getCourseInstructorId",getCourseInstructorId)
+    if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
+      const course = await getCourseById(req.params.id);
+      console.log("getCourseById", getCourseById)
+  
+      if (course) {
+        const studentList = [];
+        console.log("studentList",studentList)
+        if (course.studentsId && course.studentsId.length > 0) {
+          for (let i = 0; i < course.studentsId.length; i++) {
+            const temp = await getUserById(course.studentsId[i]);
+            studentList.push(temp);
+          }
+        }
+  
+        res.status(200).send({
+          students: studentList
+        });
+      } else {
+        res.status(404).send({
+          error: "Course id not found."
+        });
+      }
+    } else {
+      res.status(403).send({
+        error: "The request could not be made by an authenticated User."
+      });
+    }
+  });
 
 router.post('/:id/students', requireAuthenticationVer1,async(req,res,next)=>{
     console.log("req.body",req.body)
