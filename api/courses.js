@@ -104,10 +104,62 @@ router.get('/:id/students', async (req, res, next) => {
     res.sendStatus(200);
 });
 
-router.post('/:id/students', async (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
-});
+router.post('/:id/students', requireAuthenticationVer1,async(req,res,next)=>{
+    console.log("req.body",req.body)
+    //const auth = await getUserByEmail(req.user)
+    const instructorid = await getCourseInstructorId(req.params.id)
+    console.log("instructorid",instructorid)
+    console.log("req.params.id",req.params.id)
+    const course = await getCourseById(req.params.id)
+    console.log("course", course)
+    const add = req.body.add
+    console.log("add",add)
+    const remove = req.body.remove
+    console.log("remove",remove)
+    let studentList = []
+
+    for(let i = 0; i<add.length; i++){
+        studentList.push(add[i])
+    }
+    studentList = studentList.filter(id => !remove.includes(id))
+    console.log("studentList",studentList)
+
+    if(req.authUserRole == 'admin' || (req.authUserRole == 'instructor' && req.authUserId == instructorid)){
+        if(course){
+            const resBody = {
+                _id: course._id,
+                subject:course.subject,
+                number: course.number,
+                title: course.title,
+                term: course.term,
+                instructorId: course.instructorId,
+                studentsId: studentList
+            }    
+            if(validateAgainstSchema(resBody, CourseSchema)){
+                const result = updateCourseById(course._id, resBody)
+                res.status(200).send({
+                    resBody
+                })
+            }
+            else{
+                res.status(400).send({
+                    error: "check the require field again."
+                })
+            }
+        }
+        else{
+            res.status(404).send({
+                error:"	Specified Course id not found."
+            })
+        }
+    }
+    else{
+        res.status(403).send({
+            error:"The request couldn't  made by an authenticated User"
+        })
+    }
+
+})
 
 router.get('/:id/roster', async (req, res, next) => {
     const id = parseInt(req.params.id)
