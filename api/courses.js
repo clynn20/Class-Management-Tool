@@ -3,7 +3,10 @@ const { ObjectId } = require('mongodb');
 
 const { validateAgainstSchema } = require('../lib/validation')
 const { getDbReference } = require('../lib/mongo');
-const { CourseSchema } = require('../models/course');
+const { CourseSchema, updateCourseById, getCourseInstructorId, getCourseById } = require('../models/course');
+const { getUserByEmail, getUserById} = require('../models/user');
+
+const {requireAuthenticationVer1, requireAuthenticationVer2 } = require("../lib/auth")
 
 const router = Router();
 
