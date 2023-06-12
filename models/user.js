@@ -77,7 +77,7 @@ exports.getUserByEmail = getUserByEmail
 
 
 exports.validateUserEnP = async function (email, password) {
-    const user = await getUserByEmail(email, 1)
+    const user = await getUserByEmail(email, true)
     const authenticated = user && user.password == password
     return [authenticated, user]
 }

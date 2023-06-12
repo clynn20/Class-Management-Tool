@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation')
 
-const { UserSchema, LoginSchema, insertNewUser, getUserById, getUsers, validateUserEnP, getCourseTeachById } = require('../models/user')
+const { UserSchema, LoginSchema, insertNewUser, getUserById, getUserByEmail, getUsers, validateUserEnP, getCourseTeachById } = require('../models/user')
 
 const { generateAuthToken, requireAuthenticationVer1, requireAuthenticationVer2 } = require("../lib/auth")
 
@@ -26,6 +26,14 @@ router.post('/', requireAuthenticationVer1, async function (req, res) {
                 error: "Didn't have valid user permission, only admin user can create admin or instructor"
             }) 
         } else{
+            // const duplicatedUser = await getUserByEmail(user.email, false);
+            // if (duplicatedUser.length > 0) {
+            //     res.status(400).send({
+            //         error: "Email is duplicated"
+            //     })
+            // } else {
+                
+            // }
             const id = await insertNewUser(user)
             res.status(201).send({ 
                 _id: id,
