@@ -195,13 +195,27 @@ router.post('/:id/students', requireAuthenticationVer1,async(req,res,next)=>{
 })
 
 router.get('/:id/roster', async (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
+    const id = req.params.id
+    res.sendStatus(200)
 });
 
 router.get('/:id/assignments', async (req, res, next) => {
-    const id = parseInt(req.params.id)
-    res.sendStatus(200);
+    const id = req.params.id
+    const db = getDbReference();
+    const collection = db.collection('assignments')
+    try {
+        const assignments = await collection.find({
+            courseId: id
+        }).toArray()
+
+        if (assignments.length > 0) {
+            res.status(200).send(assignments)
+        } else {
+            next()
+        }
+    } catch (err) {
+        next(err)
+    }
 });
 
 module.exports = router;

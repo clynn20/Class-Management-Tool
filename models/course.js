@@ -29,14 +29,14 @@ exports.getCourseInstructorId = async function (courseId) {
 exports.updateCourseById = async function (id, course) {
     const db = getDbReference()
     const collection = db.collection('courses')
-
+  
     if (ObjectId.isValid(id)) {
-        const result = await collection.update({ _id: new ObjectId(id) }, { $set: course }).toArray()
-        return result.matchedCount > 0 
+      const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: course })
+      return result.matchedCount > 0
     } else {
-        return null
+      return null
     }
-}
+  };
 
 exports.getCourseById = async function (id) {
     const db = getDbReference()
@@ -46,7 +46,7 @@ exports.getCourseById = async function (id) {
         const results = await collection.find({ _id: new ObjectId(id) }).toArray()
         //console.log(results)
         //console.log(results[0])
-        console.log("--resuts:", results[0])
+        console.log("--results:", results[0])
         return results[0]
     } else {
         return null

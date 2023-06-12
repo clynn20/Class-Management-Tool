@@ -43,12 +43,21 @@ exports.insertNewUser = async function (user) {
  * Fetch a user from the DB by id.
  */
 
-async function getUserById (id, includePassword) {
-        const db = getDbReference()
-        const collection = db.collection('users')
-        const projection = includePassword? {} : { password: 0}
-        const result = await collection.find({ _id: new ObjectId(id)}).project(projection).toArray()
-        return result[0]
+async function getUserById(id, includePassword) {
+    const db = getDbReference()
+    const collection = db.collection('users')
+    const projection = includePassword ? {} : { password: 0 }
+  
+    if (!ObjectId.isValid(id)) {
+      return null
+    }
+  
+    const result = await collection
+      .find({ _id: new ObjectId(id) })
+      .project(projection)
+      .toArray()
+
+    return result[0];
 }
 exports.getUserById = getUserById
 

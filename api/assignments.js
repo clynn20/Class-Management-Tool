@@ -32,23 +32,23 @@ router.post('/', requireAuthenticationVer1, async function(req, res, next) {
     }
 });
 
-router.get('/:id', function (req, res, next){
+router.get('/:id', async function (req, res, next){
     res.sendStatus(200);
 })
 
-router.patch('/:id', function (req, res, next){
+router.patch('/:id', async function (req, res, next){
     res.sendStatus(200);
 })
 
-router.delete('/:id', function (req, res, next){
+router.delete('/:id', async function (req, res, next){
     res.sendStatus(200);
 })
 
-router.get('/:id/submissions', function (req, res, next){
+router.get('/:id/submissions', async function (req, res, next){
     res.sendStatus(200);
 })
 
-router.post('/:id/submission', function (req, res, next){
+router.post('/:id/submission', async function (req, res, next){
     res.sendStatus(200);
 })
 
