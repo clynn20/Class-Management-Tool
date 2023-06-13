@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { ObjectId } = require('mongodb');
 
-const { validateAgainstSchema } = require('../lib/validation')
+const { validateAgainstSchema, extractValidFields } = require('../lib/validation')
 const { getDbReference } = require('../lib/mongo');
 const { CourseSchema, updateCourseById, getCourseInstructorId, getCourseById } = require('../models/course');
 const { getUserByEmail, getUserById} = require('../models/user');
@@ -15,35 +15,36 @@ router.get('/', async (req, res, next) => {
     const collection = db.collection('courses')
     try {
         const courses = await collection.find().toArray()
-        if (courses.length > 0) {
-            res.status(200).send(courses)
-        } else {
-            next()
-        }
+        res.status(200).send(courses)
     } catch (err) {
         next(err)
     }
 });
 
-router.post('/', async (req, res, next) => {
-    if (validateAgainstSchema(req.body, CourseSchema)) {
-        try {
-            const course = req.body
-            const db = getDbReference()
-            const collection = db.collection('courses')
-            const result = await collection.insertOne(course)
-            const returnedId = result.insertedId
-            res.status(201).send({
-                id: returnedId
+router.post('/', requireAuthenticationVer1, async (req, res, next) => {
+    if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
+        if (validateAgainstSchema(req.body, CourseSchema)) {
+            try {
+                const course = req.body
+                const db = getDbReference()
+                const collection = db.collection('courses')
+                const result = await collection.insertOne(course)
+                const returnedId = result.insertedId
+                res.status(201).send({
+                    id: returnedId
+                })
+            } catch (err) {
+                next(err)
+            }
+        } else {
+            res.status(400).send({
+                error: "Request body is not a valid course object."
             })
-        } catch (err) {
-            next(err)
+        }} else {
+            res.status(403).send({
+                error: "The request could not be made by an authenticated User."
+            })
         }
-    } else {
-        res.status(400).send({
-            error: "Request body is not a valid course object."
-        })
-    }
 });
 
 router.get('/:id', async (req, res, next) => {
@@ -57,49 +58,64 @@ router.get('/:id', async (req, res, next) => {
         if (course) {
             res.status(200).send(course)
         } else {
-            next()
+            res.status(404).json({
+                error: "Course not found"
+            })
         }
-    } catch(err) {
+    } catch (err) {
         next(err)
     }
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', requireAuthenticationVer1, async (req, res, next) => {
     const id = req.params.id
     const updatedFields = req.body
-    try {
-        const db = getDbReference()
-        const collection = db.collection('courses')
-        const course = await collection.updateOne(
-            { _id: new ObjectId(id) },
-            { $set: updatedFields }
-        )
-        if (course.modifiedCount > 0) {
-            res.status(200).send({ message: 'Course updated successfully' })
+    if (validateAgainstSchema(updatedFields, CourseSchema)) {
+        const courseBody = extractValidFields(updatedFields, CourseSchema)
+        if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
+            try {
+                const db = getDbReference()
+                const collection = db.collection('courses')
+                await collection.updateOne(
+                    { _id: new ObjectId(id) },
+                    { $set: courseBody }
+                )
+                res.status(200).send({ message: 'Course updated successfully' })
+            } catch (err) {
+                next(err)
+            }
         } else {
-            next() 
-        }
-    } catch (err) {
-        next(err)
+            res.status(403).send({
+                error: "The request could not be made by an authenticated User."
+            })
+        }} else {
+        res.status(400).send({
+            error: "The requested body is not present or did not contain a valid User object"
+        })
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', requireAuthenticationVer1, async (req, res, next) => {
     const id = req.params.id
-    try {
-        const db = getDbReference()
-        const collection = db.collection('courses')
-        const deletedCourse = await collection.deleteOne(
-            { _id: new ObjectId(id) }
-        )
-        if (deletedCourse.deletedCount > 0) {
-            res.status(200).send({ message: 'Course deleted successfully' })
-        } else {
-            next()
+    if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
+        try {
+            const db = getDbReference()
+            const collection = db.collection('courses')
+            const deletedCourse = await collection.deleteOne(
+                { _id: new ObjectId(id) }
+            )
+            if (deletedCourse.deletedCount > 0) {
+                res.status(200).send({ message: 'Course deleted successfully' })
+            } else {
+                next()
+            }
+        } catch (err) {
+            next(err)
+        }} else {
+            res.status(403).send({
+                error: "The request could not be made by an authenticated User."
+            })
         }
-    } catch (err) {
-        next(err)
-    }
 });
 
 router.get('/:id/students', requireAuthenticationVer1, async (req, res, next) => {
@@ -188,7 +204,7 @@ router.post('/:id/students', requireAuthenticationVer1, async(req,res,next)=>{
     }
     else{
         res.status(403).send({
-            error:"The request couldn't  made by an authenticated User"
+            error: "The request could not be made by an authenticated User."
         })
     }
 
@@ -196,28 +212,40 @@ router.post('/:id/students', requireAuthenticationVer1, async(req,res,next)=>{
 
 router.get('/:id/roster', requireAuthenticationVer1, async (req, res, next) => {
     const id = req.params.id
-    try {
-        const db = getDbReference()
-        const collection = db.collection('courses')
-        const course = await collection.findOne({
-            _id: new ObjectId(id)
-        })
-        if (course) {
-            const studentList = course.studentsId
-            let csvData = ["id", "name", "email"].join(",") + "\r\n"
-            for (const studentId of studentList) {
-                const student = await getUserById(studentId);
-                csvData += [student._id, student.name, student.email].join(",") + "\r\n";
+    if(req.authUserRole == 'admin' || (req.authUserRole == 'instructor' && req.authUserId == instructorid)){
+        try {
+            const db = getDbReference()
+            const collection = db.collection('courses')
+            const course = await collection.findOne({
+                _id: new ObjectId(id)
+            })
+            if (course) {
+                const studentList = course.studentsId
+                let csvData = ["id", "name", "email"].join(",") + "\r\n"
+                for (const studentId of studentList) {
+                    const student = await getUserById(studentId);
+                    if (student){
+                        csvData += [student._id, student.name, student.email].join(",") + "\r\n";
+                    } else {
+                        res.status(404).send({
+                            error: `Student ID ${studentId} not found.`
+                        })
+                        return
+                    }
+                }
+                res.status(200).set({
+                    "Content-Type": "text/csv",
+                    "Content-Disposition": `attachment; filename="studentList.csv"`
+                }).send(csvData)
+            } else {
+                next()
             }
-            res.status(200).set({
-                "Content-Type": "text/csv",
-                "Content-Disposition": `attachment; filename="studentList.csv"`
-            }).send(csvData)
-        } else {
-            next()
-        }
-    } catch(err) {
-        next(err)
+        } catch(err) {
+            next(err)
+    }} else {
+        res.status(403).send({
+            error: "The request could not be made by an authenticated User."
+        })
     }
 });
 
