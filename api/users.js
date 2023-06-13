@@ -26,19 +26,18 @@ router.post('/', requireAuthenticationVer1, async function (req, res) {
                 error: "Didn't have valid user permission, only admin user can create admin or instructor"
             }) 
         } else{
-            // const duplicatedUser = await getUserByEmail(user.email, false);
-            // if (duplicatedUser.length > 0) {
-            //     res.status(400).send({
-            //         error: "Email is duplicated"
-            //     })
-            // } else {
-                
-            // }
-            const id = await insertNewUser(user)
-            res.status(201).send({ 
-                _id: id,
-                links: `users/${id}`
-            })
+            const duplicatedUser = await getUserByEmail(user.email, false);
+            if (duplicatedUser.length > 0) {
+                res.status(400).send({
+                    error: "Email is duplicated"
+                })
+            } else {
+                const id = await insertNewUser(user)
+                res.status(201).send({ 
+                    _id: id,
+                    links: `users/${id}`
+                })
+            }
         }
     } else {
         res.status(400).send({

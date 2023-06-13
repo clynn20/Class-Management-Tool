@@ -36,6 +36,20 @@ const upload = multer({
 })
 exports.upload = upload
 
+exports.getSubmissionInfoByAssignmentId = async function (id) {
+    const db = getDbReference()
+    const bucket = new GridFSBucket(db, { bucketName: "submissions" })
+    if (!ObjectId.isValid(id)) {
+        return null
+    } else {
+        const results = await bucket.find({ "metadata.assignmentId": id })
+            .toArray()
+        console.log("== results:", results)
+
+        return results
+    }
+}
+
 exports.saveSubmissionFile = function (submission){
     return new Promise ((resolve, reject) =>{
         const db = getDbReference()

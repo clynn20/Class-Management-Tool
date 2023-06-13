@@ -3,7 +3,7 @@ const { validateAgainstSchema, extractValidFields } = require('../lib/validation
 const { requireAuthenticationVer1, requireAuthenticationVer2, getAuthUserRole} = require('../lib/auth')
 const { AssignmentSchema, insertNewAssignment, getAssignments, updateAssignmentsById, removeAssignmentsById, getAssignmentById } = require('../models/assignment')
 const { getCourseInstructorId, getCourseById, getStudentsByCourseId } = require('../models/course')
-const { upload, fileTypes, saveSubmissionFile, removeUploadFile, SubmissionSchema} = require('../models/submission')
+const { upload, fileTypes, saveSubmissionFile, removeUploadFile, SubmissionSchema, getSubmissionInfoByAssignmentId} = require('../models/submission')
 const { ObjectId } = require('mongodb')
 const router = Router();
 
@@ -109,8 +109,58 @@ router.delete('/:courseId/:assignmentId', async function (req, res, next){
     }
 })
 
-router.get('/:id/submissions', async function (req, res, next){
-    res.sendStatus(200);
+router.get('/:id/submissions', requireAuthenticationVer1, async function (req, res, next){
+    const assignmentId = req.params.id;
+    if (req.body && req.body.courseId && ObjectId.isValid(assignmentId) && ObjectId.isValid(req.body.courseId)) {
+        const courseId = req.body.courseId;
+        const course = await getCourseById(courseId);
+        if (req.authUserRole == "admin" || (req.authUserRole == "instructor" && req.authUserId == course.instructorId)) {
+            try {
+                const submissions = await getSubmissionInfoByAssignmentId(assignmentId);
+                if (submissions) {
+                    const response = submissions.map(x => {
+                        return {
+                            "id": x._id,
+                            "filename": x.filename,
+                            "contentType": x.metadata.contentType,
+                            "assignmentId": x.metadata.assignmentId,
+                            "studentId": x.metadata.studentId,
+                            "timestamp": x.metadata.timestamp,
+                            // "links": {
+                            //     "download": "/submissions/media/files" + x._id
+                            // }
+                        }
+                    });
+
+                    let page = parseInt(req.query.page) || 1;
+                    const pageSize = 10;
+                    const lastPage = Math.ceil(response.length / pageSize);
+                    page = (page < 1) ? 1 : page;
+                    page = (page > lastPage) ? lastPage : page;
+
+                    const start = (page - 1) * pageSize;
+                    const end = start + pageSize;
+                    const submissionsPage = response.slice(start, end);
+
+                    res.sendStatus(200).send({ Submissions: submissionsPage});
+                } else {
+                    res.status(404).send({ 
+                        error: "Specified Assignment `id` not found"
+                    })
+                }
+            } catch (error) {
+                res.status(500).send({message: error.message});
+            }
+        }else{
+            res.status(403).send({ 
+                error: "The request was not made by an authenticated User satisfying the authorization criteria described above"
+            })
+        }
+    } else {
+        res.status(400).send({ 
+            error: "The request body was either not present or did not contain any fields related to Assignment objects"
+        })
+    }
 })
 
 router.post('/:id/submissions', requireAuthenticationVer2, getAuthUserRole, upload.single('file'), async function (req, res, next){
