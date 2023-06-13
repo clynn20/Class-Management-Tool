@@ -103,14 +103,14 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 router.get('/:id/students', requireAuthenticationVer1, async (req, res, next) => {
-    console.log(req.authUserId);
-    console.log(req.authUserRole);
+    //console.log(req.authUserId);
+    //console.log(req.authUserRole);
     const auth = await getUserByEmail(req.user);
     const instructorid = await getCourseInstructorId(req.params.id);
-    console.log("getCourseInstructorId",getCourseInstructorId)
+    //console.log("getCourseInstructorId",getCourseInstructorId)
     if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
       const course = await getCourseById(req.params.id);
-      console.log("getCourseById", getCourseById)
+      //console.log("getCourseById", getCourseById)
   
       if (course) {
         const studentList = [];
@@ -138,24 +138,24 @@ router.get('/:id/students', requireAuthenticationVer1, async (req, res, next) =>
   });
 
 router.post('/:id/students', requireAuthenticationVer1,async(req,res,next)=>{
-    console.log("req.body",req.body)
+    //console.log("req.body",req.body)
     //const auth = await getUserByEmail(req.user)
     const instructorid = await getCourseInstructorId(req.params.id)
-    console.log("instructorid",instructorid)
-    console.log("req.params.id",req.params.id)
+    //console.log("instructorid",instructorid)
+    //console.log("req.params.id",req.params.id)
     const course = await getCourseById(req.params.id)
-    console.log("course", course)
+    //console.log("course", course)
     const add = req.body.add
-    console.log("add",add)
+    //console.log("add",add)
     const remove = req.body.remove
-    console.log("remove",remove)
+    //console.log("remove",remove)
     let studentList = []
 
     for(let i = 0; i<add.length; i++){
         studentList.push(add[i])
     }
     studentList = studentList.filter(id => !remove.includes(id))
-    console.log("studentList",studentList)
+    //console.log("studentList",studentList)
 
     if(req.authUserRole == 'admin' || (req.authUserRole == 'instructor' && req.authUserId == instructorid)){
         if(course){

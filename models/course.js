@@ -18,11 +18,11 @@ exports.CourseSchema = CourseSchema
 exports.getCourseInstructorId = async function (courseId) {
     const db = getDbReference()
     const collection = db.collection('courses')
-    const result = await collection.find({ _id: new ObjectId(courseId)}).toArray()
-    if(result[0]){
-        return result[0].instructorId
-    } else {
+    if(!ObjectId.isValid(courseId)){
         return null
+    } else{
+        const result = await collection.find({ _id: new ObjectId(courseId)}).toArray()
+        return result[0].instructorId
     }
 }
 
@@ -44,12 +44,24 @@ exports.getCourseById = async function (id) {
 
     if(ObjectId.isValid(id)){
         const results = await collection.find({ _id: new ObjectId(id) }).toArray()
-        //console.log(results)
-        //console.log(results[0])
-        console.log("--results:", results[0])
         return results[0]
     } else {
         return null
     }
 
+}
+
+exports.getStudentsByCourseId = async function (courseId){
+    const db = getDbReference()
+    const collection = db.collection('courses')
+    if(ObjectId.isValid(courseId)){
+        const results = await collection.find({_id: new ObjectId(courseId)}).toArray()
+        if(results[0].studentsId){
+            return results[0].studentsId
+        } else if(results[0].studentsId === undefined){
+            return []
+        }
+    } else {
+        return null
+    }
 }

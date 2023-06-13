@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation')
 
-const { UserSchema, LoginSchema, insertNewUser, getUserById, getUserByEmail, getUsers, validateUserEnP, getCourseTeachById } = require('../models/user')
+const { UserSchema, LoginSchema, insertNewUser, getUserById, getUserByEmail, getUsers, validateUserEnP, getCourseTeachById, getCourseEnrollById } = require('../models/user')
 
 const { generateAuthToken, requireAuthenticationVer1, requireAuthenticationVer2 } = require("../lib/auth")
 
@@ -79,27 +79,28 @@ router.post('/login', async function (req, res, next) {
 router.get('/:id', requireAuthenticationVer2, async function( req, res, next){
     const id = req.params.id
     const user = await getUserById(id, 1)
-    //console.log(user._id)
-    if(req.authUserId == id && user._id == id && user.role == "instructor"){
-        const courseTeach = await getCourseTeachById (id)
-        res.status(200).send({
-            user: user,
-            courses_list: courseTeach
-        })
-    }
-    // I'll go back to implement this after the post/courses/{id}/students is done
-    /*
-    else if (req.authUserId == id && user._id == id && user.role == "student"){
-        const courseEnroll = await getCourseEnrollById (id) 
-        res.status(200).send({
-            user: user, 
-            courses_list: courseEnroll
-        })
-    }
-    */ 
-    else{
-        res.status(403).send({
-            error: "Not an authenticated user, you don't have permission"
+    if(user){
+        if(req.authUserId == id && user._id == id && user.role == "instructor"){
+            const courseTeach = await getCourseTeachById (id)
+            res.status(200).send({
+                user: user,
+                courses_teach: courseTeach
+            })
+        }
+        else if (req.authUserId == id && user._id == id && user.role == "student"){
+            const courseEnroll = await getCourseEnrollById (id) 
+            res.status(200).send({
+                user: user, 
+                courses_enroll: courseEnroll
+            })
+        } else{
+            res.status(403).send({
+               error: "Not an authenticated user, you don't have permission"
+            })
+        }
+    } else{
+        res.status(404).send({
+            error: "No such user exists"
         })
     }
 })

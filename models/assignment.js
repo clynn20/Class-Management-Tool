@@ -14,6 +14,7 @@ exports.AssignmentSchema = AssignmentSchema
 
 
 
+
 exports.insertNewAssignment = async function (assignment) {
     const assignmentToInsert = extractValidFields(assignment, AssignmentSchema)
     const db = getDbReference()
@@ -51,3 +52,14 @@ exports.removeAssignmentsById = async function (id){
 
     return result.matchedCount > 0;
 } 
+
+exports.getAssignmentById = async function(id, includeId) {
+    const db = getDbReference()
+    const collection = db.collection('assignments')
+    const projection = includeId ? {} : { _id: 0 }
+    if (!ObjectId.isValid(id)) {
+        return null
+      }
+    const result = await collection.find({_id: new ObjectId(id)}).project(projection).toArray()
+    return result[0]
+}

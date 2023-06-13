@@ -31,9 +31,10 @@ exports.getUsers = async function (){
  */
 exports.insertNewUser = async function (user) {
     const userToInsert = extractValidFields(user, UserSchema)
-    //console.log("  -- userToInsert:", userToInsert)
     const db = getDbReference()
     const collection = db.collection('users')
+    const passwordHash = await bcrypt.hash(userToInsert.password, 8)
+    userToInsert.password = passwordHash
     const result = await collection.insertOne(userToInsert)
     return result.insertedId
 }
@@ -78,7 +79,7 @@ exports.getUserByEmail = getUserByEmail
 
 exports.validateUserEnP = async function (email, password) {
     const user = await getUserByEmail(email, true)
-    const authenticated = user && user.password == password
+    const authenticated = user && await bcrypt.compare(password, user.password)
     return [authenticated, user]
 }
 
@@ -88,15 +89,20 @@ exports.getCourseTeachById = async function (id) {
         const collection = db.collection('courses')
         const results = await collection.find({ instructorId: id}).toArray()
         if(results){
-            return results
+            return results.map(results => results._id)
         } else{
             return null
         }
 }
 
-/*
+
 exports.getCourseEnrollById = async function (id) {
     const db = getDbReference()
     const collection = db.collection('courses')
+    const results = await collection.find({ studentsId: id}).toArray()
+    if(results){
+        return results.map( results => results._id)
+    } else {
+        return null
+    }
 }
-*/
