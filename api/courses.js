@@ -12,10 +12,26 @@ const router = Router();
 
 router.get('/', async (req, res, next) => {
     const db = getDbReference();
-    const collection = db.collection('courses')
+    const collection = db.collection('courses');
+    const page = parseInt(req.query.page) || 1
+    const pageSize = 10
     try {
-        const courses = await collection.find().toArray()
-        res.status(200).send(courses)
+        const totalCount = await collection.countDocuments()
+        const totalPages = Math.ceil(totalCount / pageSize)
+
+        const courses = await collection
+            .find()
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .toArray()
+
+        res.status(200).json({
+            courses,
+            totalPages,
+            currentPage: page,
+            pageSize,
+            totalCount,
+        })
     } catch (err) {
         next(err)
     }

@@ -1,0 +1,740 @@
+_type: export
+__export_format: 4
+__export_date: 2023-06-14T07:39:00.765Z
+__export_source: insomnia.desktop.app:v2023.2.2
+resources:
+  - _id: req_1367a5ad4eeb4a078bb33d8b16baee79
+    parentId: fld_216b2763327041068cd74ea0792247c9
+    modified: 1686704378980
+    created: 1686537147786
+    url: http://localhost:8000/assignments
+    name: Post assignment
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "courseId": "64890d9596452b4519e0b6c8",
+          "title": "Assignment 3",
+          "points": 100,
+          "due": "2022-06-14T17:00:00-07:00"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1686537189159
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_216b2763327041068cd74ea0792247c9
+    parentId: wrk_80703b39946142c89d4976b5e5ebe745
+    modified: 1686535815771
+    created: 1686535815771
+    name: Assignments
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1686535815772
+    _type: request_group
+  - _id: wrk_80703b39946142c89d4976b5e5ebe745
+    parentId: null
+    modified: 1685654246552
+    created: 1685654246552
+    name: final project
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_b50a951f29c44102b4f37ba6ba296209
+    parentId: fld_216b2763327041068cd74ea0792247c9
+    modified: 1686704439372
+    created: 1686537230532
+    url: http://localhost:8000/assignments/648910fb0f9e69e3a956d1a8
+    name: Get Assignment by ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1686537189109
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f27e11fb293b4886bd3c0714066b9f03
+    parentId: fld_216b2763327041068cd74ea0792247c9
+    modified: 1686704499281
+    created: 1686701053935
+    url: http://localhost:8000/assignments/648910fb0f9e69e3a956d1a8
+    name: Update Assignment
+    description: ""
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "courseId": "64890d9596452b4519e0b6c8",
+          "title": "Assignment 2",
+          "points": 100,
+          "due": "2022-06-14T17:00:00-07:00"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1686532957154.5625
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8e4a5a72aa1c4f128e7c97786eb7f6df
+    parentId: fld_216b2763327041068cd74ea0792247c9
+    modified: 1686701073143
+    created: 1686701064665
+    url: http://localhost:8000/assignments/6486840abc60f5db6a6976b0
+    name: Delete Assignment
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1686530841177.3438
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_81c97ad34d334c3aa6f6420b49616618
+    parentId: fld_216b2763327041068cd74ea0792247c9
+    modified: 1686706816209
+    created: 1686701098561
+    url: http://localhost:8000/assignments/648910fb0f9e69e3a956d1a8/submissions
+    name: Fetch Submissions
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1686529783188.7344
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_1b31ea9b2a5344c88bf67a4af0dd865b
+    parentId: fld_216b2763327041068cd74ea0792247c9
+    modified: 1686706786689
+    created: 1686701106609
+    url: http://localhost:8000/assignments/648910fb0f9e69e3a956d1a8/submissions
+    name: Create Submission
+    description: ""
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: assignmentId
+          value: 648910fb0f9e69e3a956d1a8
+          id: pair_72ef414fead54e46b78635e03f034aed
+        - id: pair_c076e3660e754838b1a84e3d1a2e5a86
+          name: studentId
+          value: 64890df496452b4519e0b6ca
+          description: ""
+        - id: pair_92ebeeed640e48c48c891c1fead46af8
+          name: timestamp
+          value: 2023-06-12T17:00:00-07:00
+          description: ""
+        - id: pair_d066e195b85d47ffa52f87a800cf5f22
+          name: grade
+          value: ""
+          description: ""
+          disabled: true
+        - id: pair_82c7c9b7a745493da2e4e4d51603a597
+          name: file
+          value: ""
+          description: ""
+          type: file
+          fileName: C:\Users\bradl\Desktop\to do.txt
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGRmNDk2NDUyYjQ1MTllMGI2Y2EiLCJpYXQiOjE2ODY3MDY3NTYsImV4cCI6MTY4Njc5MzE1Nn0.m5r2KfH2S5Jm5Nu9YIMswaPehMc-m2catr0_yQiIuaQ
+    metaSortKey: -1686529254194.4297
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_851f75af701345abb7f14ea5769bd7b9
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686728089238
+    created: 1685654248170
+    url: http://localhost:8000/courses?page=1
+    name: Get All Courses
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685654248165.7031
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_5c600aec985d4aac86002bea8d06ffb4
+    parentId: wrk_80703b39946142c89d4976b5e5ebe745
+    modified: 1686535794795
+    created: 1686535794795
+    name: Courses
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1686535794795
+    _type: request_group
+  - _id: req_f182ddebc9d74754ab32b6fc5778f680
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686703508833
+    created: 1686285516245
+    url: http://localhost:8000/courses
+    name: Create Course
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"subject": "CS",
+        	"number": "493" ,
+        	"title": "Cloud Application Development",
+        	"term": "Spring",
+        	"instructorId": "17"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1685654248165.4102
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_2362d36109fc438989cc6f4d680a44e6
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686703516831
+    created: 1686293081038
+    url: http://localhost:8000/courses/64890d9596452b4519e0b6c8
+    name: Get Course By Id
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685654248165.1172
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_facf34b919ae4c8da6edb2b9c89871e5
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686703530130
+    created: 1686293956704
+    url: http://localhost:8000/courses/64890d9596452b4519e0b6c8
+    name: Update Course
+    description: ""
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"subject": "CS",
+        	"number": "495" ,
+        	"title": "Cloud Application Development",
+        	"term": "Spring",
+        	"instructorId": "17"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1685654248164.8242
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_e285afd1c2804127b003d347926a1ee0
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686703561805
+    created: 1686294200309
+    url: http://localhost:8000/courses/64890dbc96452b4519e0b6c9
+    name: Delete Course
+    description: ""
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"subject": "CS",
+        	"number": "493" ,
+        	"title": "Cloud Application Development",
+        	"term": "Spring",
+        	"instructorId": "17"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1685654248164.6777
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8bab340aa1894ab59110b4a9fe57808c
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686703704171
+    created: 1686350315260
+    url: http://localhost:8000/courses/64890d9596452b4519e0b6c8/students
+    name: Fetch Students in Course
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1685654248164.6045
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_98252c34a24e45f4a5d43e7f3db320e8
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686706779959
+    created: 1686349120578
+    url: http://localhost:8000/courses/64890d9596452b4519e0b6c8/students
+    name: Add / Remove Students to Course
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "add": [
+            "64890cc596452b4519e0b6c6",
+            "64890d5596452b4519e0b6c7",
+        		"64890cc596452b4519e0b6c5",
+        		"64890df496452b4519e0b6ca"
+          ],
+          "remove": [
+            ""
+          ]
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1685654248164.5679
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_d2da6e0220054503a33e24cff042c905
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686703700566
+    created: 1686612016116
+    url: http://localhost:8000/courses/64890d9596452b4519e0b6c8/roster
+    name: Get Roster CSV
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1685654248164.5496
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_20e7d100ba804ea09ebf1923df77307e
+    parentId: fld_5c600aec985d4aac86002bea8d06ffb4
+    modified: 1686705259866
+    created: 1686537347539
+    url: http://localhost:8000/courses/64890d9596452b4519e0b6c8/assignments
+    name: Get Assignments by Course
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685654248164.5312
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_766ed6f36dd644a5b66f3461f7e09f6b
+    parentId: fld_51ba71f11f2948e78c0ecb6b375066bc
+    modified: 1686703442790
+    created: 1686423111897
+    url: http://localhost:8000/users/
+    name: Create User
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "professor",
+        	"email": "instructor@oregonstate.edu",
+        	"password": "hunter2",
+        	"role": "instructor"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+    metaSortKey: -1686528725200.125
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_51ba71f11f2948e78c0ecb6b375066bc
+    parentId: wrk_80703b39946142c89d4976b5e5ebe745
+    modified: 1686535766087
+    created: 1686535766087
+    name: Users
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1686535766087
+    _type: request_group
+  - _id: req_ef1da748723b4203baabea8abd086125
+    parentId: fld_51ba71f11f2948e78c0ecb6b375066bc
+    modified: 1686703097809
+    created: 1686703078057
+    url: http://localhost:8000/users/
+    name: Create Admin
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "new admin",
+        	"email": "new_admin@oregonstate.edu",
+        	"password": "hunter2",
+        	"role": "admin"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: ""
+    metaSortKey: -1686528725193.875
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f9eb5c655cd445d7a4eae98df78fae8b
+    parentId: fld_51ba71f11f2948e78c0ecb6b375066bc
+    modified: 1686703609913
+    created: 1686703592877
+    url: http://localhost:8000/users/
+    name: Create Student
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "student",
+        	"email": "student123@oregonstate.edu",
+        	"password": "hunter2",
+        	"role": "student"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+      token: ""
+    metaSortKey: -1686528725190.75
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_3b963f2177374f82ba3b714d0b259c57
+    parentId: fld_51ba71f11f2948e78c0ecb6b375066bc
+    modified: 1686704941423
+    created: 1686535925430
+    url: http://localhost:8000/users/login
+    name: Admin Login
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "admin@oregonstate.edu",
+        	"password": "hunter2"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+    metaSortKey: -1686528725187.625
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_80eb711493c44febb78b444e87f3c13a
+    parentId: fld_51ba71f11f2948e78c0ecb6b375066bc
+    modified: 1686703474650
+    created: 1686703461800
+    url: http://localhost:8000/users/login
+    name: Instructor Login
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "instructor@oregonstate.edu",
+        	"password": "hunter2"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+    metaSortKey: -1686528725168.875
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_c03808febe2941529a040f09d1e6f087
+    parentId: fld_51ba71f11f2948e78c0ecb6b375066bc
+    modified: 1686704949860
+    created: 1686704946224
+    url: http://localhost:8000/users/login
+    name: Student Login
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "student@oregonstate.edu",
+        	"password": "hunter2"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+    metaSortKey: -1686528725159.5
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_82dc28e347c44d23bc23ecad51baf38e
+    parentId: fld_51ba71f11f2948e78c0ecb6b375066bc
+    modified: 1686703480444
+    created: 1686535751959
+    url: http://localhost:8000/users/64890d5596452b4519e0b6c7
+    name: Get User by ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGQ1NTk2NDUyYjQ1MTllMGI2YzciLCJpYXQiOjE2ODY3MDM0NzUsImV4cCI6MTY4Njc4OTg3NX0.bPqYQSvnh_BQYCmOmRVqstATRqY6u1ItlFeZQbVlpvQ
+    metaSortKey: -1686528725150.125
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8da231b64a354294a0846b8cea59ddf3
+    parentId: fld_51ba71f11f2948e78c0ecb6b375066bc
+    modified: 1686700993602
+    created: 1686535711331
+    url: http://localhost:8000/users/
+    name: Get Users
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"name": "admin",
+        	"email": "admin@admin.com",
+        	"password": "password",
+        	"role": "admin"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication:
+      type: bearer
+    metaSortKey: -1686528725100.125
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_da02ab2bb32f7c50a6364195eea2ce3b69fbd744
+    parentId: wrk_80703b39946142c89d4976b5e5ebe745
+    modified: 1685654246556
+    created: 1685654246556
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: 1685654246556
+    _type: environment
+  - _id: jar_da02ab2bb32f7c50a6364195eea2ce3b69fbd744
+    parentId: wrk_80703b39946142c89d4976b5e5ebe745
+    modified: 1685654246557
+    created: 1685654246557
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: spc_ab7120d93a1047b18a238b36c0cdbd97
+    parentId: wrk_80703b39946142c89d4976b5e5ebe745
+    modified: 1685654246553
+    created: 1685654246553
+    fileName: final project
+    contents: ""
+    contentType: yaml
+    _type: api_spec
