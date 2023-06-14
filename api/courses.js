@@ -89,6 +89,13 @@ router.get('/:id', async (req, res, next) => {
 router.patch('/:id', requireAuthenticationVer1, async (req, res, next) => {
     const id = req.params.id
     const updatedFields = req.body
+    const instructorid = await getCourseInstructorId(req.params.id)
+
+    if (instructorid === undefined || instructorid === null) {
+        res.status(404).send({ error: 'Instructor ID not found in courses' })
+        return
+    }
+    
     if (validateAgainstSchema(updatedFields, CourseSchema)) {
         const courseBody = extractValidFields(updatedFields, CourseSchema)
         if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
@@ -116,6 +123,13 @@ router.patch('/:id', requireAuthenticationVer1, async (req, res, next) => {
 
 router.delete('/:id', requireAuthenticationVer1, async (req, res, next) => {
     const id = req.params.id
+    const instructorid = await getCourseInstructorId(req.params.id)
+
+    if (instructorid === undefined || instructorid === null) {
+        res.status(404).send({ error: 'Instructor ID not found in courses' })
+        return
+    }
+    
     if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
         try {
             const db = getDbReference()
@@ -231,6 +245,7 @@ router.post('/:id/students', requireAuthenticationVer1, async(req,res,next)=>{
 
 router.get('/:id/roster', requireAuthenticationVer1, async (req, res, next) => {
     const id = req.params.id
+    const instructorid = await getCourseInstructorId(req.params.id)
     if(req.authUserRole == 'admin' || (req.authUserRole == 'instructor' && req.authUserId == instructorid)){
         try {
             const db = getDbReference()

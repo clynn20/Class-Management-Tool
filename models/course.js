@@ -19,13 +19,19 @@ exports.CourseSchema = CourseSchema
 exports.getCourseInstructorId = async function (courseId) {
     const db = getDbReference()
     const collection = db.collection('courses')
-    if(!ObjectId.isValid(courseId)){
+    
+    if (!ObjectId.isValid(courseId)) {
+      return null
+    } else {
+      const result = await collection.find({ _id: new ObjectId(courseId) }).toArray()
+      
+      if (result.length === 0) {
         return null
-    } else{
-        const result = await collection.find({ _id: new ObjectId(courseId)}).toArray()
+      } else {
         return result[0].instructorId
+      }
     }
-}
+  };
 
 exports.updateCourseById = async function (id, course) {
     const db = getDbReference()
