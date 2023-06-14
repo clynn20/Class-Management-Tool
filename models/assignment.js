@@ -38,7 +38,7 @@ exports.updateAssignmentsById = async function (assignmentToUpdate, assignmentId
         {_id: new ObjectId(assignmentId)},
         {$set: assignmentToUpdate}
     );
-
+    console.log("== result ", result.matchedCount)
     return result.matchedCount > 0;
 } 
 
@@ -46,11 +46,9 @@ exports.removeAssignmentsById = async function (id){
     const db = getDbReference();
     const collection = db.collection('assignments');
 
-    const result = await collection.updateOne(
-        {_id: id}
+    await collection.deleteOne(
+        {_id: new ObjectId(id)}
     );
-
-    return result.matchedCount > 0;
 } 
 
 exports.getAssignmentById = async function(id, includeId) {
