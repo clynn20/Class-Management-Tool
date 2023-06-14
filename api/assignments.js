@@ -49,117 +49,144 @@ router.get('/:id', async function (req, res, next){
 })
 
 router.patch('/:id', requireAuthenticationVer1, async function (req, res, next){
-    const assignmentId = req.params.id;
-    if (req.body && req.body.courseId && ObjectId.isValid(assignmentId) && ObjectId.isValid(req.body.courseId)) {
+    try {
+        const assignmentId = req.params.id;
         const assignment = extractValidFields(req.body, AssignmentSchema);
+
+        if (!(req.body && req.body.courseId && ObjectId.isValid(assignmentId) && ObjectId.isValid(req.body.courseId))) {
+            return res.status(400).send({ 
+                error: "The request body was either not present or did not contain any fields related to Assignment objects"
+            })
+        }
+
         const course = await getCourseById(assignment.courseId);
-        if (req.authUserRole == "admin" || (req.authUserRole == "instructor" && req.authUserId == course.instructorId)) {
-            try {
-                const result = await updateAssignmentsById(assignment, assignmentId);
-                if (result) {
-                    res.sendStatus(200).send({ Message: "Success"});
-                } else {
-                    res.status(404).send({ 
-                        error: "Specified Assignment `id` not found"
-                    })
-                }
-            } catch (error) {
-                res.status(500).send({message: error.message});
-            }
-        }else{
-            res.status(403).send({ 
+        if (!course) {
+            return res.status(404).send({ 
+                error: "Specified Course `id` not found"
+            })
+        }
+
+        if (!(req.authUserRole == "admin" || (req.authUserRole == "instructor" && req.authUserId == course.instructorId))) {
+            return res.status(403).send({ 
                 error: "The request was not made by an authenticated User satisfying the authorization criteria described above"
             })
         }
-    } else {
-        res.status(400).send({ 
-            error: "The request body was either not present or did not contain any fields related to Assignment objects"
-        })
+        
+        const result = await updateAssignmentsById(assignment, assignmentId);
+        if (result) {
+            res.sendStatus(200).send({ Message: "Success"});
+        } else {
+            res.status(404).send({ 
+                error: "Specified Assignment `id` not found"
+            })
+        }
+    } catch (error) {
+        res.status(500).send({message: error.message});
     }
 });
 
-router.delete('/:courseId/:assignmentId', async function (req, res, next){
-    const assignmentId = req.params.assignmentId;
-    const courseId = req.params.courseId;
-    if (ObjectId.isValid(assignmentId) && ObjectId.isValid(courseId)) {
-        // const assignment = extractValidFields(req.body, AssignmentSchema);
-        const course = await getCourseById(courseId);
-        if (req.authUserRole == "admin" || (req.authUserRole == "instructor" && req.authUserId == course.instructorId)) {
-            try {
-                const result = await removeAssignmentsById(assignmentId);
-                if (result) {
-                    res.sendStatus(204).send({ Message: "Success"});
-                } else {
-                    res.status(404).send({ 
-                        error: "Specified Assignment `id` not found"
-                    })
-                }
-            } catch (error) {
-                res.status(500).send({message: error.message});
-            }
-        }else{
-            res.status(403).send({ 
+router.delete('/:id', async function (req, res, next){
+
+    try {
+        const assignmentId = req.params.id;
+        if (!ObjectId.isValid(assignmentId)) {
+            return res.status(400).send({ 
+                error: "The request body was either not present or did not contain any fields related to Assignment objects"
+            })
+        }
+        
+        const assignment = await getAssignmentById(assignmentId, false)
+        if (!assignment) {
+            return res.status(404).send({ 
+                error: "Specified Assignment `id` not found"
+            })
+        }
+
+        const course = await getCourseById(assignment.courseId);
+        if (!course) {
+            return res.status(404).send({ 
+                error: "Specified Course `id` not found"
+            })
+        }
+
+        if (!(req.authUserRole == "admin" || (req.authUserRole == "instructor" && req.authUserId == course.instructorId))) {
+            return res.status(403).send({ 
                 error: "The request was not made by an authenticated User satisfying the authorization criteria described above"
             })
         }
-    } else {
-        res.status(400).send({ 
-            error: "The request body was either not present or did not contain any fields related to Assignment objects"
-        })
+
+        await removeAssignmentsById(assignmentId);
+        return res.sendStatus(204).send({ Message: "Success"});
+    } catch (error) {
+        res.status(500).send({message: error.message});
     }
 })
 
 router.get('/:id/submissions', requireAuthenticationVer1, async function (req, res, next){
-    const assignmentId = req.params.id;
-    if (req.body && req.body.courseId && ObjectId.isValid(assignmentId) && ObjectId.isValid(req.body.courseId)) {
-        const courseId = req.body.courseId;
-        const course = await getCourseById(courseId);
-        if (req.authUserRole == "admin" || (req.authUserRole == "instructor" && req.authUserId == course.instructorId)) {
-            try {
-                const submissions = await getSubmissionInfoByAssignmentId(assignmentId);
-                if (submissions) {
-                    const response = submissions.map(x => {
-                        return {
-                            "id": x._id,
-                            "filename": x.filename,
-                            "contentType": x.metadata.contentType,
-                            "assignmentId": x.metadata.assignmentId,
-                            "studentId": x.metadata.studentId,
-                            "timestamp": x.metadata.timestamp,
-                            // "links": {
-                            //     "download": "/submissions/media/files" + x._id
-                            // }
-                        }
-                    });
 
-                    let page = parseInt(req.query.page) || 1;
-                    const pageSize = 10;
-                    const lastPage = Math.ceil(response.length / pageSize);
-                    page = (page < 1) ? 1 : page;
-                    page = (page > lastPage) ? lastPage : page;
+    try {
+        const assignmentId = req.params.id;
+        if (!ObjectId.isValid(assignmentId)) {
+            return res.status(400).send({ 
+                error: "The request body was either not present or did not contain any fields related to Assignment objects"
+            })
+        }
+        
+        const assignment = await getAssignmentById(assignmentId, false)
+        if (!assignment) {
+            return res.status(404).send({ 
+                error: "Specified Assignment `id` not found"
+            })
+        }
 
-                    const start = (page - 1) * pageSize;
-                    const end = start + pageSize;
-                    const submissionsPage = response.slice(start, end);
+        const course = await getCourseById(assignment.courseId);
+        if (!course) {
+            return res.status(404).send({ 
+                error: "Specified Course `id` not found"
+            })
+        }
 
-                    res.sendStatus(200).send({ Submissions: submissionsPage});
-                } else {
-                    res.status(404).send({ 
-                        error: "Specified Assignment `id` not found"
-                    })
-                }
-            } catch (error) {
-                res.status(500).send({message: error.message});
-            }
-        }else{
-            res.status(403).send({ 
+        if (!(req.authUserRole == "admin" || (req.authUserRole == "instructor" && req.authUserId == course.instructorId))) {
+            return res.status(403).send({ 
                 error: "The request was not made by an authenticated User satisfying the authorization criteria described above"
             })
         }
-    } else {
-        res.status(400).send({ 
-            error: "The request body was either not present or did not contain any fields related to Assignment objects"
-        })
+
+        const submissions = await getSubmissionInfoByAssignmentId(assignmentId);
+        if (!submissions) {
+            return res.status(404).send({ 
+                error: "Specified Assignment `id` not found"
+            })
+        }
+
+        const response = submissions.map(x => {
+            return {
+                "id": x._id,
+                "filename": x.filename,
+                "contentType": x.metadata.contentType,
+                "assignmentId": x.metadata.assignmentId,
+                "studentId": x.metadata.studentId,
+                "timestamp": x.metadata.timestamp,
+                // "links": {
+                //     "download": "/submissions/media/files" + x._id
+                // }
+            }
+        });
+
+        let page = parseInt(req.query.page) || 1;
+        const pageSize = 10;
+        const lastPage = Math.ceil(response.length / pageSize);
+        page = (page < 1) ? 1 : page;
+        page = (page > lastPage) ? lastPage : page;
+
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const submissionsPage = response.slice(start, end);
+
+        res.sendStatus(200).send({ Submissions: submissionsPage});
+
+    } catch (error) {
+        res.status(500).send({message: error.message});
     }
 })
 
