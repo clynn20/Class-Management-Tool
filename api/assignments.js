@@ -52,6 +52,7 @@ router.patch('/:id', requireAuthenticationVer1, async function (req, res, next){
     try {
         const assignmentId = req.params.id;
         const assignment = extractValidFields(req.body, AssignmentSchema);
+        console.log("== req body ", assignment)
 
         if (!(req.body && req.body.courseId && ObjectId.isValid(assignmentId) && ObjectId.isValid(req.body.courseId))) {
             return res.status(400).send({ 
@@ -74,7 +75,10 @@ router.patch('/:id', requireAuthenticationVer1, async function (req, res, next){
         
         const result = await updateAssignmentsById(assignment, assignmentId);
         if (result) {
-            res.sendStatus(200).send({ Message: "Success"});
+            console.log("== Success!")
+            res.status(200).send({ 
+                Message: "Success"
+            });
         } else {
             res.status(404).send({ 
                 error: "Specified Assignment `id` not found"
@@ -85,7 +89,7 @@ router.patch('/:id', requireAuthenticationVer1, async function (req, res, next){
     }
 });
 
-router.delete('/:id', async function (req, res, next){
+router.delete('/:id', requireAuthenticationVer1, async function (req, res, next){
 
     try {
         const assignmentId = req.params.id;
@@ -116,7 +120,9 @@ router.delete('/:id', async function (req, res, next){
         }
 
         await removeAssignmentsById(assignmentId);
-        return res.sendStatus(204).send({ Message: "Success"});
+        return res.status(204).send({ 
+            Message: "Success"
+        });
     } catch (error) {
         res.status(500).send({message: error.message});
     }
@@ -183,7 +189,9 @@ router.get('/:id/submissions', requireAuthenticationVer1, async function (req, r
         const end = start + pageSize;
         const submissionsPage = response.slice(start, end);
 
-        res.sendStatus(200).send({ Submissions: submissionsPage});
+        res.status(200).send({ 
+            Submissions: submissionsPage
+        });
 
     } catch (error) {
         res.status(500).send({message: error.message});
