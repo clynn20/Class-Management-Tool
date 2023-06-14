@@ -38,29 +38,32 @@ router.get('/', async (req, res, next) => {
 });
 
 router.post('/', requireAuthenticationVer1, async (req, res, next) => {
-    if (req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorid)) {
-        if (validateAgainstSchema(req.body, CourseSchema)) {
-            try {
-                const course = req.body
-                const db = getDbReference()
-                const collection = db.collection('courses')
-                const result = await collection.insertOne(course)
-                const returnedId = result.insertedId
-                res.status(201).send({
-                    id: returnedId
-                })
-            } catch (err) {
-                next(err)
-            }
-        } else {
-            res.status(400).send({
+
+    try {
+        if (!validateAgainstSchema(req.body, CourseSchema)) {
+            return res.status(400).send({
                 error: "Request body is not a valid course object."
             })
-        }} else {
-            res.status(403).send({
+        }
+
+        const instructorId = req.body.instructorId
+        if (!(req.authUserRole === 'admin' || (req.authUserRole === 'instructor' && req.authUserId === instructorId))) {
+            return res.status(403).send({
                 error: "The request could not be made by an authenticated User."
             })
         }
+
+        const course = req.body
+        const db = getDbReference()
+        const collection = db.collection('courses')
+        const result = await collection.insertOne(course)
+        const returnedId = result.insertedId
+        res.status(201).send({
+            id: returnedId
+        })
+    } catch (err) {
+        res.status(500).send({message: err.message});
+    }
 });
 
 router.get('/:id', async (req, res, next) => {
