@@ -2,16 +2,23 @@ require('dotenv').config()
 
 const express = require('express')
 const morgan = require('morgan')
+// const redis = require("./lib/ioredis")
+// const redis = require("redis")
 
 const api = require('./api')
 const { connectToDb } = require('./lib/mongo')
 const { connectToRabbitMQ } = require('./lib/rabbitmq')
+const {connectToRedis, rateLimit} = require('./lib/redis')
 
 const app = express()
 const port = process.env.PORT || 8000
 
 app.use(morgan('dev'))
 app.use(express.json())
+
+app.use(async function(req, res, next){
+    rateLimit(req, res, next)
+});
 
 app.use('/', api)
 
@@ -40,3 +47,6 @@ connectToDb(async function () {
         console.log("== Server is running on port", port)
     })
 })
+
+connectToRedis()
+

@@ -10,7 +10,8 @@ const CourseSchema = {
     number: { required: true },
     title: { required: true },
     term: { required: true },
-    instructorId: { required: true }
+    instructorId: { required: true },
+    studentsId: {type: Array}
 }
 exports.CourseSchema = CourseSchema
 

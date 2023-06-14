@@ -15,6 +15,14 @@ services:
     networks:
       - my-network
 
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - my-network
+      
   node:
     build: .
     container_name: api
@@ -23,9 +31,13 @@ services:
       - MONGO_HOST=mongo
       - MONGO_USER=root
       - MONGO_PASSWORD=hunter2
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ALLOW_EMPTY_PASSWORD=yes
     restart: on-failure
     depends_on:
       - mongo
+      - redis
     ports:
       - "8000:8000"
     networks:
