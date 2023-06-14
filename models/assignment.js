@@ -33,9 +33,9 @@ exports.getAssignments = async function () {
 exports.updateAssignmentsById = async function (assignmentToUpdate, assignmentId){
     const db = getDbReference();
     const collection = db.collection('assignments');
-
+    console.log(assignmentId)
     const result = await collection.updateOne(
-        {_id: assignmentId},
+        {_id: new ObjectId(assignmentId)},
         {$set: assignmentToUpdate}
     );
 

@@ -257,11 +257,19 @@ router.get('/:id/assignments', async (req, res, next) => {
         const assignments = await collection.find({
             courseId: id
         }).toArray()
-
-        if (assignments.length > 0) {
-            res.status(200).send(assignments)
+        const course = await collection.findOne({
+            courseId: id
+        })
+        if (course) {
+            if (assignments.length > 0) {
+                res.status(200).send(assignments)
+            } else {
+                res.status(404).send({
+                    error: `No assignments for class ID ${id}.`})
+            }
         } else {
-            next()
+            res.status(404).send({
+                error: `Course ID ${id} not found in assignments.`})
         }
     } catch (err) {
         next(err)

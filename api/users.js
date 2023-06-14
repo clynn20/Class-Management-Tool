@@ -27,7 +27,7 @@ router.post('/', requireAuthenticationVer1, async function (req, res) {
             }) 
         } else{
             const duplicatedUser = await getUserByEmail(user.email, false);
-            if (duplicatedUser.length > 0) {
+            if (duplicatedUser) {
                 res.status(400).send({
                     error: "Email is duplicated"
                 })
