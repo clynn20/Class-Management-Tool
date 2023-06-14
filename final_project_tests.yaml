@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-14T07:39:00.765Z
+__export_date: 2023-06-14T18:31:41.547Z
 __export_source: insomnia.desktop.app:v2023.2.2
 resources:
   - _id: req_1367a5ad4eeb4a078bb33d8b16baee79
@@ -131,7 +131,7 @@ resources:
     _type: request
   - _id: req_81c97ad34d334c3aa6f6420b49616618
     parentId: fld_216b2763327041068cd74ea0792247c9
-    modified: 1686706816209
+    modified: 1686761832018
     created: 1686701098561
     url: http://localhost:8000/assignments/648910fb0f9e69e3a956d1a8/submissions
     name: Fetch Submissions
@@ -140,7 +140,9 @@ resources:
     body: {}
     parameters: []
     headers: []
-    authentication: {}
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3NjE4MjYsImV4cCI6MTY4Njg0ODIyNn0.efVNde5w99l5m0U4bsrQW-bRbce4o2dfR-GfU-MEfnM
     metaSortKey: -1686529783188.7344
     isPrivate: false
     settingStoreCookies: true
@@ -152,7 +154,7 @@ resources:
     _type: request
   - _id: req_1b31ea9b2a5344c88bf67a4af0dd865b
     parentId: fld_216b2763327041068cd74ea0792247c9
-    modified: 1686706786689
+    modified: 1686761970319
     created: 1686701106609
     url: http://localhost:8000/assignments/648910fb0f9e69e3a956d1a8/submissions
     name: Create Submission
@@ -170,7 +172,7 @@ resources:
           description: ""
         - id: pair_92ebeeed640e48c48c891c1fead46af8
           name: timestamp
-          value: 2023-06-12T17:00:00-07:00
+          value: 2023-07-12T17:00:00-07:00
           description: ""
         - id: pair_d066e195b85d47ffa52f87a800cf5f22
           name: grade
@@ -201,9 +203,9 @@ resources:
     _type: request
   - _id: req_851f75af701345abb7f14ea5769bd7b9
     parentId: fld_5c600aec985d4aac86002bea8d06ffb4
-    modified: 1686728089238
+    modified: 1686761727958
     created: 1685654248170
-    url: http://localhost:8000/courses?page=1
+    url: http://localhost:8000/courses?page=2
     name: Get All Courses
     description: ""
     method: GET
@@ -232,7 +234,7 @@ resources:
     _type: request_group
   - _id: req_f182ddebc9d74754ab32b6fc5778f680
     parentId: fld_5c600aec985d4aac86002bea8d06ffb4
-    modified: 1686703508833
+    modified: 1686761702659
     created: 1686285516245
     url: http://localhost:8000/courses
     name: Create Course
@@ -246,7 +248,7 @@ resources:
         	"number": "493" ,
         	"title": "Cloud Application Development",
         	"term": "Spring",
-        	"instructorId": "17"
+        	"instructorId": "64890d5596452b4519e0b6c7"
         }
     parameters: []
     headers:
@@ -287,9 +289,9 @@ resources:
     _type: request
   - _id: req_facf34b919ae4c8da6edb2b9c89871e5
     parentId: fld_5c600aec985d4aac86002bea8d06ffb4
-    modified: 1686703530130
+    modified: 1686761737033
     created: 1686293956704
-    url: http://localhost:8000/courses/64890d9596452b4519e0b6c8
+    url: http://localhost:8000/courses/6489f0f6760265be13e6cd83
     name: Update Course
     description: ""
     method: PATCH
@@ -298,10 +300,10 @@ resources:
       text: |-
         {
         	"subject": "CS",
-        	"number": "495" ,
+        	"number": "555" ,
         	"title": "Cloud Application Development",
         	"term": "Spring",
-        	"instructorId": "17"
+        	"instructorId": "64890d5596452b4519e0b6c7"
         }
     parameters: []
     headers:
@@ -309,7 +311,7 @@ resources:
         value: application/json
     authentication:
       type: bearer
-      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGQ1NTk2NDUyYjQ1MTllMGI2YzciLCJpYXQiOjE2ODY3NjA0NDgsImV4cCI6MTY4Njg0Njg0OH0.H8uxeHOJvP0DthVrKT43Kt_JhvIA9ouI1OOS5sCmyjo
     metaSortKey: -1685654248164.8242
     isPrivate: false
     settingStoreCookies: true
@@ -321,26 +323,15 @@ resources:
     _type: request
   - _id: req_e285afd1c2804127b003d347926a1ee0
     parentId: fld_5c600aec985d4aac86002bea8d06ffb4
-    modified: 1686703561805
+    modified: 1686761771562
     created: 1686294200309
-    url: http://localhost:8000/courses/64890dbc96452b4519e0b6c9
+    url: http://localhost:8000/courses/6489f0f6760265be13e6cd83
     name: Delete Course
     description: ""
     method: DELETE
-    body:
-      mimeType: application/json
-      text: |-
-        {
-        	"subject": "CS",
-        	"number": "493" ,
-        	"title": "Cloud Application Development",
-        	"term": "Spring",
-        	"instructorId": "17"
-        }
+    body: {}
     parameters: []
-    headers:
-      - name: Content-Type
-        value: application/json
+    headers: []
     authentication:
       type: bearer
       token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDg5MGJiY2VhMDAyM2ZhZmRlMTg5Y2MiLCJpYXQiOjE2ODY3MDMwNjMsImV4cCI6MTY4Njc4OTQ2M30.If0rAifJ0Ub2fIsK_AuLk3yYG2cIk7eCU_2JzOZHpvM
